@@ -11,18 +11,18 @@
                 :value="null">
           <span style="float: left"> 所有用户</span>
           <span style="float: right; color: #8492a6; font-size: 13px">
-            <span class="el-tag">{{ total}}</span>
+            <span class="el-tag">{{ total }}</span>
           </span>
         </el-option>
         <el-option
                 clearable
-                v-for="item in userAuthList"
-                :key="item.userAuth"
-                :label="item.userAuth"
-                :value="item.userAuth">
-          <span >{{ item.userAuth }}</span>
+                v-for="item in userRoleList"
+                :key="item.roleName"
+                :label="item.roleName"
+                :value="item.total">
+          <span >{{ item.roleName }}</span>
           <span style="float: right; color: #8492a6; font-size: 13px">
-            <span class="el-tag">{{ item.size }}</span>
+            <span class="el-tag">{{ item.total }}</span>
           </span>
         </el-option>
       </el-select>
@@ -185,10 +185,10 @@
         <el-form-item label="用户角色" label-width="120px">
           <el-select v-model="editUserForm.userAuth" placeholder="请选择">
             <el-option
-                    v-for="item in userAuthList"
-                    :key="item.userAuth"
-                    :label="item.userAuth"
-                    :value="item.userAuth">
+                    v-for="item in userRoleList"
+                    :key="item.roleName"
+                    :label="item.roleName"
+                    :value="item.roleName">
             </el-option>
           </el-select>
         </el-form-item>
@@ -238,12 +238,13 @@
 </template>
 
 <script>
-  import {findUserList, updateSilenceById,updateUserInfo,logicDeleteUserById,  addUser} from "../../api/users";
+  import {findUserList, updateSilenceById, updateUserInfo, logicDeleteUserById, addUser, getUserRoleList} from "../../api/users";
 
   export default {
     name: "Users",
     created() {
       this.getUserList();
+      this.getUserRoleList();
     },
     data() {
       return {
@@ -253,22 +254,27 @@
         },
         nowTime:"",
         // 用户角色集合
-        userAuthList:[{
-          userAuth: '超级管理员',
-          size:0,
-        }, {
-          userAuth: '管理员',
-          size:0,
-        }, {
-          userAuth: '普通用户',
-          size:0,
-        }, {
-          userAuth: '游客',
-          size:0,
-        }, {
-          userAuth: '后台测试',
-          size:0,
-        }],
+        // userAuthList:[{
+        //   userAuth: '超级管理员',
+        //   size:0,
+        //   type: 'admin',
+        // }, {
+        //   userAuth: '管理员',
+        //   size:0,
+        //   type: 'admin',
+        // }, {
+        //   userAuth: '普通用户',
+        //   size:0,
+        //   type: 'user',
+        // }, {
+        //   userAuth: '游客',
+        //   size:0,
+        //   type: 'user',
+        // }, {
+        //   userAuth: '后台测试',
+        //   size:0,
+        //   type: 'test',
+        // }],
         //用户集合
         userList: [],
         //用户角色集合
@@ -312,11 +318,18 @@
         this.current=val;
         this.getUserList();
       },
+
       async getUserList(){
        const {data} = await findUserList(this.current,this.size,this.UserQueryVO.roleName,this.UserQueryVO.nickname);
         this.userList=data.data.data;
         this.total=data.data.total;
       },
+
+       async getUserRoleList() {
+         const {data} = await getUserRoleList()
+         this.userRoleList = data.data.userList
+       },
+
       reset(){
         this.UserQueryVO.nickname='';
         this.UserQueryVO.userAuth='';

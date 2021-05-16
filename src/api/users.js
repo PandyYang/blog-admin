@@ -17,6 +17,14 @@ export  const findUserList=(current,size,roleName,nickname)=>{
   })
 }
 
+//查询role列表
+export  const getUserRoleList=()=>{
+  return request({
+    url: "/role/roleList",
+
+  })
+}
+
 
 //通过id修改用户禁言状态
 export  const updateSilenceById=(flag,id)=>{
