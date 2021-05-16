@@ -19,7 +19,7 @@
                 v-for="item in userRoleList"
                 :key="item.roleName"
                 :label="item.roleName"
-                :value="item.total">
+                :value="item.roleName">
           <span >{{ item.roleName }}</span>
           <span style="float: right; color: #8492a6; font-size: 13px">
             <span class="el-tag">{{ item.total }}</span>
