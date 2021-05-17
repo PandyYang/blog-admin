@@ -200,7 +200,7 @@
       //更新或者保存文章
       async saveOrUpdateArticle(){
        const {data} = await saveOrUpdateArticle(this.article);
-       if(data.success){
+       if(data.status){
          this.$notify.success({
            title: "成功",
            message: "发布成功",

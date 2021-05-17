@@ -13,7 +13,7 @@
 
       <div style="margin-left:auto">
         <el-input
-                v-model="articleTitle"
+                v-model="title"
                 prefix-icon="el-icon-search"
                 size="small"
                 placeholder="请输入博客标题"
@@ -39,7 +39,7 @@
       <el-table-column prop="articleTitle" label="标题" align="center">
         <template slot-scope="scope">
           <el-tag>
-            {{ scope.row.articleTitle }}
+            {{ scope.row.title }}
           </el-tag>
         </template>
       </el-table-column>
@@ -72,7 +72,7 @@
       <el-table-column prop="updateTime" label="更新时间" align="center">
         <template slot-scope="scope">
           <i class="el-icon-time" style="margin-right:5px" />
-          {{ scope.row.updateTime  }}
+          {{ scope.row.updateTime }}
         </template>
       </el-table-column>
 <!--      置顶-->
@@ -137,7 +137,7 @@
     data(){
       return{
         articleList:[],
-        articleTitle:"", //模糊搜索的
+        title:"", //模糊搜索的
         current:1 ,//当前页
         size:5 ,//一页的条数
         total:100,//总条数
@@ -145,10 +145,11 @@
     },
     methods:{
        async getList(){
-        await   listArticle(this.current,this.size,this.articleTitle).then(({data})=>{
-         if(data.success){
-           this.articleList=data.data.data;
-           this.total=data.data.total;
+        await  listArticle(this.current, this.size, this.title).then(({data})=>{
+         // debugger
+         if(data.status){
+           this.articleList=data.data.data.items;
+           this.total=data.data.data.total;
          }
        }).catch(()=>{
          this.$message.error("请求博客列表失败");
