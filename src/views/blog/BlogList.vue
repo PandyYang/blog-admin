@@ -92,14 +92,13 @@
       <el-table-column label="操作" align="center" width="160">
         <template slot-scope="scope">
           <el-button type="primary" size="mini"
-                     @click="editArticle(scope.row.articleId)"
-                     >
+                     @click="editArticle(scope.row.id)">
             编辑
           </el-button>
           <el-popconfirm
                   title="确定删除吗？"
                   style="margin-left:1rem"
-                  @onConfirm="deleteArticle(scope.row.articleId)"
+                  @onConfirm="deleteArticle(scope.row.id)"
           >
             <el-button size="mini" type="danger" slot="reference">
               删除
@@ -158,8 +157,8 @@
       editArticle(id){
         this.$router.push({ path: "/article/" + id });
       } ,
-     async  deleteArticle(articleId){
-        const {data} =  await deleteArticleById(articleId);
+     async  deleteArticle(id){
+        const {data} =  await deleteArticleById(id);
         if(data.success){
           this.$message.success("删除成功");
           this.getList();

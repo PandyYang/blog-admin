@@ -126,8 +126,8 @@
       //如果文章id不是空 就根据当前id获取文章的信息
       if (articleId!=null && articleId!="") {
         getArticleById(articleId).then(({data})=>{
-          if(data.success){
-            this. article=data.data.data;
+          if(data.status){
+            this.article=data.data.data;
           }
         })
       }
