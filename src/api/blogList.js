@@ -12,12 +12,10 @@ export  const listArticle=(current,size,title)=>{
   })
 }
 
-export  const deleteArticleById=(articleId)=>{
+export const deleteArticles=(str)=>{
   return request({
-    url: "/article/deleteArticleById",
+    url: "/article/deleteArticles",
     method: "delete",
-    params:{
-      articleId
-    }
+    data: str
   })
 }

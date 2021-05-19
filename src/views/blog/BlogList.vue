@@ -6,6 +6,7 @@
               type="danger"
               size="small"
               icon="el-icon-deleteItem"
+              :disabled="articleIdList.length === 0"
               @click="isDelete = true"
       >
         批量删除
@@ -32,9 +33,14 @@
     </div>
 
     <!-- 表格展示 -->
-    <el-table border :data="articleList">
+    <el-table
+        border
+        :data="articleList"
+        @selection-change="selectionChange"
+    >
       <!-- 表格列 -->
       <el-table-column type="selection" width="55" />
+
       <!-- 标签名 -->
       <el-table-column prop="articleTitle" label="标题" align="center">
         <template slot-scope="scope">
@@ -95,10 +101,11 @@
                      @click="editArticle(scope.row.id)">
             编辑
           </el-button>
+
           <el-popconfirm
                   title="确定删除吗？"
                   style="margin-left:1rem"
-                  @onConfirm="deleteArticle(scope.row.id)"
+                  @onConfirm="deleteArticles(scope.row.id)"
           >
             <el-button size="mini" type="danger" slot="reference">
               删除
@@ -118,14 +125,26 @@
             :total="total"
             background
     />
-
+    <!-- 批量逻辑删除对话框 -->
+    <el-dialog :visible.sync="isDelete" width="30%">
+      <div class="dialog-title-container" slot="title">
+        <i class="el-icon-warning" style="color:#ff9900" />提示
+      </div>
+      <div style="font-size:1rem">是否删除选中项？</div>
+      <div slot="footer">
+        <el-button @click="isDelete = false">取 消</el-button>
+        <el-button type="primary" @click="deleteArticles(null)">
+          确 定
+        </el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
 <script>
 
 
-  import {deleteArticleById, listArticle} from "../../api/blogList";
+  import {deleteArticles, listArticle} from "../../api/blogList";
 
   export default {
     created() {
@@ -135,14 +154,22 @@
     name: "blogList",
     data(){
       return{
-        articleList:[],
-        title:"", //模糊搜索的
-        current:1 ,//当前页
-        size:5 ,//一页的条数
-        total:100,//总条数
+        isDelete: false,
+        articleList: [],
+        articleIdList: [],
+        title: "", //模糊搜索的
+        current: 1 ,//当前页
+        size: 5 ,//一页的条数
+        total: 100,//总条数
       }
     },
     methods:{
+      selectionChange(articleList) {
+        this.articleIdList = []
+        articleList.forEach(res => {
+          this.articleIdList.push(res.id)
+        })
+      },
        async getList(){
         await  listArticle(this.current, this.size, this.title).then(({data})=>{
          // debugger
@@ -157,14 +184,22 @@
       editArticle(id){
         this.$router.push({ path: "/article/" + id });
       } ,
-     async  deleteArticle(id){
-        const {data} =  await deleteArticleById(id);
-        if(data.success){
+     async deleteArticles(id){
+        let param = {}
+        if (id == null) {
+          param = this.articleIdList
+        }else {
+          param = [id]
+        }
+        var str = param.join(",")
+        const {data} =  await deleteArticles(str);
+        if(data.status){
           this.$message.success("删除成功");
-          this.getList();
+          this.getList()
         }else{
           this.$message.error("删除失败");
         }
+       this.isDelete = false
       },
       handleSizeChange(val) {
         //把val复制给size 重新在后台查询数据
