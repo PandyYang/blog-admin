@@ -140,9 +140,9 @@
     methods:{
       async getList(){
        const {data} =  await listTags(this.current,this.size,this.tagName);
-       if(data.success){
-         this.tagList=data.data.data;
-         this.total=data.data.total;
+       if(data.status){
+         this.tagList=data.data.data.items;
+         this.total=data.data.data.total;
        }
       },
       openModel(tag) {
@@ -162,7 +162,7 @@
           return false;
         }
         const {data}= await  addOrEditTag(this.tagForm);
-        if(data.success){
+        if(data.status){
           this.$message.success("新增标签成功");
           this.getList();
         }else {
@@ -174,11 +174,11 @@
         console.log("删除点击");
        const{data} = await deleteTag(tagId);
         console.log(data);
-       if(data.success){
+       if(data.status){
          this.getList()  ;
          this.$message.success("删除当前标签成功");
        } else{
-         this.$message.error("删除当前标签失败");
+         this.$message.error("删除当前标签失败, 确保当前标签下没有引用文章");
        }
       },
       sizeChange(val) {

@@ -141,9 +141,9 @@
     methods:{
       async getList(){
         const {data} =  await listCategory(this.current,this.size,this.categoryName);
-        if(data.success){
-          this.categoryList=data.data.data;
-          this.total=data.data.total;
+        if(data.status){
+          this.categoryList=data.data.data.items;
+          this.total=data.data.data.total;
         }
       },
       openModel(tag) {
@@ -164,7 +164,7 @@
           return false;
         }
         const {data}= await addOrEditCategory(this.categoryForm);
-        if(data.success){
+        if(data.status){
           this.$message.success("操作成功");
           this.getList();
         }else {
@@ -173,8 +173,8 @@
         this.addOrEdit = false;
       },
       async deleteCategory(categoryId){
-         const {data} =await    deleteCategory(categoryId);
-         if(data.success){
+         const {data} =await deleteCategory(categoryId);
+         if(data.status){
            this.getList()  ;
            this.$message.success("删除当前分类成功");
          } else{
